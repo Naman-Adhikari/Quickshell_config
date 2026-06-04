@@ -7,4 +7,7 @@ ShellRoot {
 
     Bar {}
     ClipboardPanel {}
+	AppLauncher {
+        id: appLauncher
+    }
 }

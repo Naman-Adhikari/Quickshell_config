@@ -50,6 +50,10 @@ PanelWindow {
                 Layout.alignment: Qt.AlignHCenter
             }
 
+			AppPanel {
+    Layout.alignment: Qt.AlignHCenter
+}
+
             Item {
                 Layout.fillHeight: true
             }
