@@ -11,7 +11,7 @@ Rectangle {
     color: "#101510"
 
     border.width: 1
-    border.color: "#0d9104"
+    border.color: "#101510"
 
     Text {
         anchors.centerIn: parent

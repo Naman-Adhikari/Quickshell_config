@@ -6,18 +6,42 @@ import Quickshell.Io
 
 PanelWindow {
     id: root
-	property bool open: false
+
+    property bool open: false
+
     visible: open
     focusable: true
-	color:"transparent"
+    color: "transparent"
 
     implicitWidth: 850
     implicitHeight: 600
 
-function toggleLauncher() {
-    open = !open
+    readonly property color accent: "#2d7a46"
+    readonly property color accentBright: "#3f9d5c"
+    readonly property color textColor: "#b8d8b8"
+    readonly property color panelBg: "#0a0f0a"
+    readonly property color panelInner: "#080c08"
+    readonly property color inputBg: "#0d140d"
+    readonly property color itemBg: "#0b110b"
+    readonly property color itemHover: "#132013"
+    readonly property color placeholderColor: "#4f6b4f"
 
-    if (open) {
+    function toggleLauncher() {
+        open = !open
+
+        if (open) {
+            search.text = ""
+            panel.results = AppService.search("")
+
+            Qt.callLater(function() {
+                search.forceActiveFocus()
+            })
+        }
+    }
+
+    function openLauncher() {
+        open = true
+
         search.text = ""
         panel.results = AppService.search("")
 
@@ -25,38 +49,26 @@ function toggleLauncher() {
             search.forceActiveFocus()
         })
     }
-}
-
-function openLauncher() {
-    open = true
-
-    search.text = ""
-    panel.results = AppService.search("")
-
-    Qt.callLater(function() {
-        search.forceActiveFocus()
-    })
-}
-
-function closeLauncher() {
-    open = false
-}
-
-IpcHandler {
-    target: "launcher"
-
-    function toggleLauncher() {
-        root.toggleLauncher()
-    }
-
-    function openLauncher() {
-        root.openLauncher()
-    }
 
     function closeLauncher() {
-        root.closeLauncher()
+        open = false
     }
-}
+
+    IpcHandler {
+        target: "launcher"
+
+        function toggleLauncher() {
+            root.toggleLauncher()
+        }
+
+        function openLauncher() {
+            root.openLauncher()
+        }
+
+        function closeLauncher() {
+            root.closeLauncher()
+        }
+    }
 
     Process {
         id: launcher
@@ -64,7 +76,7 @@ IpcHandler {
 
     Rectangle {
         anchors.fill: parent
-        color: "#000000dd"
+        color: "#000000e6"
 
         MouseArea {
             anchors.fill: parent
@@ -81,10 +93,10 @@ IpcHandler {
 
         radius: 14
 
-        color: "#090d09"
+        color: root.panelBg
 
         border.width: 2
-        border.color: "#00ff66"
+        border.color: root.accent
 
         property var results: []
 
@@ -93,7 +105,7 @@ IpcHandler {
             anchors.margins: 2
 
             radius: 12
-            color: "#0d120d"
+            color: root.panelInner
         }
 
         Column {
@@ -104,17 +116,18 @@ IpcHandler {
             Text {
                 text: "◢ SYSTEM APPLICATION LAUNCHER ◣"
 
-                color: "#00ff66"
+                color: root.accentBright
 
                 font.pixelSize: 18
                 font.bold: true
                 font.family: "JetBrains Mono"
-				Keys.onPressed: event => {
-    if (event.key === Qt.Key_Escape) {
-        root.open = false
-        event.accepted = true
-    }
-}
+
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Escape) {
+                        root.open = false
+                        event.accepted = true
+                    }
+                }
             }
 
             Rectangle {
@@ -123,10 +136,10 @@ IpcHandler {
 
                 radius: 8
 
-                color: "#101810"
+                color: root.inputBg
 
                 border.width: 1
-                border.color: "#00ff66"
+                border.color: root.accent
 
                 Row {
                     anchors.fill: parent
@@ -139,7 +152,7 @@ IpcHandler {
 
                         text: ">"
 
-                        color: "#00ff66"
+                        color: root.accentBright
 
                         font.pixelSize: 18
                         font.bold: true
@@ -153,10 +166,10 @@ IpcHandler {
 
                         focus: true
 
-                        color: "#d0ffd0"
+                        color: root.textColor
 
                         placeholderText: "Search applications..."
-                        placeholderTextColor: "#4d8f4d"
+                        placeholderTextColor: root.placeholderColor
 
                         font.family: "JetBrains Mono"
 
@@ -187,8 +200,8 @@ IpcHandler {
             Rectangle {
                 width: parent.width
                 height: 1
-                color: "#00ff66"
-                opacity: 0.3
+                color: root.accent
+                opacity: 0.25
             }
 
             ListView {
@@ -209,11 +222,11 @@ IpcHandler {
                     radius: 6
 
                     color: mouse.containsMouse
-                           ? "#143014"
-                           : "#0f150f"
+                           ? root.itemHover
+                           : root.itemBg
 
                     border.width: mouse.containsMouse ? 1 : 0
-                    border.color: "#00ff66"
+                    border.color: root.accent
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
@@ -222,7 +235,7 @@ IpcHandler {
 
                         text: modelData.name
 
-                        color: "#c0ffc0"
+                        color: root.textColor
 
                         font.pixelSize: 14
                         font.family: "JetBrains Mono"

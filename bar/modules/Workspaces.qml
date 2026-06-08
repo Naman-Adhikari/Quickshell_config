@@ -30,7 +30,7 @@ ColumnLayout {
 
             radius: 0
 
-            color: active ? "#235b1f" : "#101510"
+            color: active ? "#1d3f2a" : "#101510"
 
             border.width: active ? 2 : 1
             border.color: "#235b1f"

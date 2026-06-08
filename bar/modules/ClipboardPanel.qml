@@ -9,8 +9,15 @@ PanelWindow {
 
     property bool open: false
 
+    readonly property color accent: "#2d7a46"
+    readonly property color accentBright: "#3f9d5c"
+    readonly property color textColor: "#b8d8b8"
+    readonly property color panelBg: "#0a0f0a"
+    readonly property color itemBg: "#0b110b"
+    readonly property color itemHover: "#132013"
+
     visible: open
-	focusable: true
+    focusable: true
 
     anchors {
         top: true
@@ -19,7 +26,6 @@ PanelWindow {
     }
 
     implicitWidth: 400
-
     exclusiveZone: 0
 
     color: "transparent"
@@ -33,177 +39,199 @@ PanelWindow {
         historyProcess.running = true
     }
 
-		function toggleClipboard() {
-    open = !open
-
-    if (open) {
-        loadHistory()
-        historyView.forceActiveFocus()
-    }
-}
-function openClipboard() {
-    open = true
-    loadHistory()
-    historyView.forceActiveFocus()
-}
-
-function closeClipboard() {
-    open = false
-}
-
-IpcHandler {
-    target: "clipboard"
-
     function toggleClipboard() {
-        root.toggleClipboard()
+        open = !open
+
+        if (open) {
+            loadHistory()
+            historyView.forceActiveFocus()
+        }
     }
 
     function openClipboard() {
-        root.openClipboard()
+        open = true
+        loadHistory()
+        historyView.forceActiveFocus()
     }
 
     function closeClipboard() {
-        root.closeClipboard()
+        open = false
     }
-}
+
+    IpcHandler {
+        target: "clipboard"
+
+        function toggleClipboard() {
+            root.toggleClipboard()
+        }
+
+        function openClipboard() {
+            root.openClipboard()
+        }
+
+        function closeClipboard() {
+            root.closeClipboard()
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
 
-        color: "#0a0d0a"
+        color: root.panelBg
 
         border.width: 1
-        border.color: "#0d9104"
+        border.color: root.accent
 
         Column {
             anchors.fill: parent
+            anchors.margins: 8
 
-            anchors.margins: 6
-
-            spacing: 4
+            spacing: 6
 
             Text {
                 text: "Clipboard"
 
-                color: "#72ffb2"
+                color: root.accentBright
 
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 19
+                font.bold: true
             }
 
-        ListView {
-    id: historyView
+            Rectangle {
+                width: parent.width
+                height: 1
 
-    width: parent.width
-    height: parent.height
+                color: root.accent
+                opacity: 0.25
+            }
 
-    clip: true
+            ListView {
+                id: historyView
 
-    model: clipboardModel
+                width: parent.width
+                height: parent.height
 
-    spacing: 2
+                clip: true
 
-    focus: root.open
-    currentIndex: 0
+                model: clipboardModel
 
-    keyNavigationWraps: true
+                spacing: 3
 
-    highlight: Rectangle {
-        color: "#173317"
-        border.width: 1
-        border.color: "#72ffb2"
-    }
+                focus: root.open
+                currentIndex: 0
 
-    highlightFollowsCurrentItem: true
+                keyNavigationWraps: true
 
-Keys.onPressed: event => {
-    if (event.key === Qt.Key_J) {
-        currentIndex = Math.min(currentIndex + 1, clipboardModel.count - 1)
-        event.accepted = true
-        return
-    }
+                highlight: Rectangle {
+                    radius: 6
 
-    if (event.key === Qt.Key_K) {
-        currentIndex = Math.max(currentIndex - 1, 0)
-        event.accepted = true
-        return
-    }
+                    color: root.itemHover
 
-    if (event.key === Qt.Key_Return ||
-        event.key === Qt.Key_Enter) {
+                    border.width: 1
+                    border.color: root.accent
+                }
 
-        if (currentIndex >= 0) {
-            const item = clipboardModel.get(currentIndex)
+                highlightFollowsCurrentItem: true
 
-            copyProcess.entryId = item.itemId
-            copyProcess.running = true
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_J) {
+                        currentIndex = Math.min(
+                            currentIndex + 1,
+                            clipboardModel.count - 1
+                        )
+                        event.accepted = true
+                        return
+                    }
 
-            root.open = false
-        }
+                    if (event.key === Qt.Key_K) {
+                        currentIndex = Math.max(
+                            currentIndex - 1,
+                            0
+                        )
+                        event.accepted = true
+                        return
+                    }
 
-        event.accepted = true
-    }
+                    if (event.key === Qt.Key_Return ||
+                        event.key === Qt.Key_Enter) {
 
-    if (event.key === Qt.Key_Escape) {
-        root.open = false
-        event.accepted = true
-    }
-}
-    delegate: Rectangle {
-        required property string itemId
-        required property string preview
+                        if (currentIndex >= 0) {
+                            const item = clipboardModel.get(currentIndex)
 
-        width: ListView.view.width
-        height: 42
+                            copyProcess.entryId = item.itemId
+                            copyProcess.running = true
 
-        color: ListView.isCurrentItem
-            ? "#173317"
-            : (mouse.containsMouse
-                ? "#173317"
-                : "#101510")
+                            root.open = false
+                        }
 
-        border.width: 1
-        border.color: ListView.isCurrentItem
-            ? "#72ffb2"
-            : "#0d9104"
+                        event.accepted = true
+                    }
 
-        Text {
-            anchors.fill: parent
+                    if (event.key === Qt.Key_Escape) {
+                        root.open = false
+                        event.accepted = true
+                    }
+                }
 
-            anchors.leftMargin: 6
-            anchors.rightMargin: 6
+                delegate: Rectangle {
+                    required property string itemId
+                    required property string preview
 
-            verticalAlignment: Text.AlignVCenter
+                    width: ListView.view.width
+                    height: 42
 
-            text: preview
+                    radius: 6
 
-            elide: Text.ElideRight
+                    color: ListView.isCurrentItem
+                        ? root.itemHover
+                        : (mouse.containsMouse
+                            ? root.itemHover
+                            : root.itemBg)
 
-            color: "#72ffb2"
+                    border.width: 1
 
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 14
-        }
+                    border.color: ListView.isCurrentItem
+                        ? root.accent
+                        : "#162016"
 
+                    Text {
+                        anchors.fill: parent
 
-        MouseArea {
-            id: mouse
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
 
-            anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
 
-            hoverEnabled: true
+                        text: preview
 
-            onClicked: {
-                historyView.currentIndex = index
+                        elide: Text.ElideRight
 
-                copyProcess.entryId = itemId
-                copyProcess.running = true
+                        color: root.textColor
 
-                root.open = false
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 14
+                    }
+
+                    MouseArea {
+                        id: mouse
+
+                        anchors.fill: parent
+
+                        hoverEnabled: true
+
+                        onClicked: {
+                            historyView.currentIndex = index
+
+                            copyProcess.entryId = itemId
+                            copyProcess.running = true
+
+                            root.open = false
+                        }
+                    }
+                }
             }
         }
-    }
-}
-}
     }
 
     Process {
@@ -249,9 +277,10 @@ Keys.onPressed: event => {
         ]
     }
 
-onOpenChanged: {
-    if (open) {
-        loadHistory()
-        historyView.forceActiveFocus()
+    onOpenChanged: {
+        if (open) {
+            loadHistory()
+            historyView.forceActiveFocus()
+        }
     }
-}}
+}

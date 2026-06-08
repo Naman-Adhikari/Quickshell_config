@@ -13,14 +13,14 @@ Rectangle {
         : "transparent"
 
     border.width: mouse.containsMouse ? 1 : 0
-    border.color: "#00ff66"
+    border.color: "#000000"
 
     Text {
         anchors.centerIn: parent
 
         text: "󰀻"
 
-        color: "#c0ffc0"
+        color: "#82e0a4"
 
         font.pixelSize: 20
         font.family: "JetBrainsMono Nerd Font"

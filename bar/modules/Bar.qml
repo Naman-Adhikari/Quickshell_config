@@ -33,10 +33,10 @@ PanelWindow {
 
         radius: 1
 
-        color: "#0a0f0a"
+        color: "#06190d"
 
         border.width: 1
-        border.color: "#1f8f1f"
+        border.color: "#13351f"
 
         ColumnLayout {
             anchors.fill: parent

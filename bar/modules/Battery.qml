@@ -11,10 +11,10 @@ Rectangle {
     implicitWidth: 24
     implicitHeight: 120
 
-    color: "#101510"
+    color: "#0a0f0a"
 
     border.width: 1
-    border.color: "#0d9104"
+    border.color: "#2d7a46"
 
     Column {
         anchors.fill: parent
@@ -22,43 +22,44 @@ Rectangle {
 
         spacing: 6
 
-	Rectangle {
-		id: batteryBody
+        Rectangle {
+            id: batteryBody
 
-		anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
 
-		width: parent.width / 2
-		height: 90
+            width: parent.width / 2
+            height: 90
 
-		color: "#0a0d0a"
+            color: "#1d3f2a"
 
-		border.width: 1
-		border.color: "#0d9104"
+            border.width: 1
+            border.color: "#000000"   // <- change or remove
 
-		Rectangle {
-			anchors {
-				left: parent.left
-				right: parent.right
-				bottom: parent.bottom
-			}
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
 
-			height: parent.height * root.batteryPercent / 100
+                height: parent.height * root.batteryPercent / 100
 
-			color: "#0d9104"
+                color: "#3f9d5c"
 
-			Behavior on height {
-				NumberAnimation {
-					duration: 300
-				}
-			}
-		}
-	}
+                Behavior on height {
+                    NumberAnimation {
+                        duration: 300
+                    }
+                }
+            }
+        }
+
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
 
             text: root.batteryPercent + "%"
 
-            color: "#72ffb2"
+            color: "#b8d8b8"
 
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 8

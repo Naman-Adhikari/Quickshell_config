@@ -12,6 +12,16 @@ PanelWindow {
 
     visible: false
 
+    readonly property color accent: "#2d7a46"
+    readonly property color accentBright: "#3f9d5c"
+    readonly property color textColor: "#b8d8b8"
+    readonly property color panelBg: "#0a0f0a"
+    readonly property color panelInner: "#080c08"
+    readonly property color cardBg: "#0d140d"
+    readonly property color itemBg: "#0b110b"
+    readonly property color itemHover: "#132013"
+    readonly property color mutedText: "#6e8a6e"
+
     anchors {
         right: true
         bottom: true
@@ -25,23 +35,19 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
 
-        radius: 0
-
-        color: "#0a0f0a"
+        color: panel.panelBg
 
         border.width: 2
-        border.color: "#39ff14"
+        border.color: panel.accent
 
         Rectangle {
             anchors.fill: parent
             anchors.margins: 2
 
-            radius: 0
-
-            color: "#101510"
+            color: panel.panelInner
 
             border.width: 1
-            border.color: "#1f8f1f"
+            border.color: panel.accent
         }
 
         ColumnLayout {
@@ -57,19 +63,17 @@ PanelWindow {
                 font.pixelSize: 24
                 font.bold: true
 
-                color: "#39ff14"
+                color: panel.accentBright
             }
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 90
 
-                radius: 1
-
-                color: "#151f15"
+                color: panel.cardBg
 
                 border.width: 1
-                border.color: "#39ff14"
+                border.color: panel.accent
 
                 Column {
                     anchors.fill: parent
@@ -82,7 +86,7 @@ PanelWindow {
                             ? "Connected"
                             : "Disconnected"
 
-                        color: "#39ff14"
+                        color: panel.accentBright
                         font.bold: true
                     }
 
@@ -91,7 +95,7 @@ PanelWindow {
                             ? WifiService.ssid
                             : "No active network"
 
-                        color: "#d0ffd0"
+                        color: panel.textColor
                     }
 
                     Label {
@@ -99,7 +103,7 @@ PanelWindow {
                             ? "Signal: " + WifiService.strength + "%"
                             : ""
 
-                        color: "#88aa88"
+                        color: panel.mutedText
                     }
                 }
             }
@@ -110,7 +114,7 @@ PanelWindow {
                 Label {
                     text: "Wireless Radio"
 
-                    color: "#d0ffd0"
+                    color: panel.textColor
                     Layout.fillWidth: true
                 }
 
@@ -127,13 +131,14 @@ PanelWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
 
-                color: "#1f8f1f"
+                color: panel.accent
+                opacity: 0.25
             }
 
             Label {
                 text: "Available Networks"
 
-                color: "#39ff14"
+                color: panel.accentBright
                 font.bold: true
             }
 
@@ -148,7 +153,7 @@ PanelWindow {
 
                     model: wifiModel
 
-                    spacing: 8
+                    spacing: 6
 
                     delegate: Rectangle {
                         required property string ssid
@@ -157,14 +162,18 @@ PanelWindow {
                         width: wifiList.width
                         height: 64
 
-                        radius: 1
-
-                        color: "#151f15"
+                        color: mouse.containsMouse
+                            ? panel.itemHover
+                            : panel.itemBg
 
                         border.width: 1
-                        border.color: "#1f8f1f"
+                        border.color: mouse.containsMouse
+                            ? panel.accent
+                            : "#162016"
 
                         MouseArea {
+                            id: mouse
+
                             anchors.fill: parent
 
                             hoverEnabled: true
@@ -195,7 +204,7 @@ PanelWindow {
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 18
 
-                                color: "#39ff14"
+                                color: panel.accentBright
                             }
 
                             ColumnLayout {
@@ -204,7 +213,7 @@ PanelWindow {
                                 Label {
                                     text: ssid
 
-                                    color: "#d0ffd0"
+                                    color: panel.textColor
                                     font.bold: true
 
                                     elide: Text.ElideRight
@@ -213,7 +222,7 @@ PanelWindow {
                                 Label {
                                     text: "Signal Strength"
 
-                                    color: "#88aa88"
+                                    color: panel.mutedText
                                     font.pixelSize: 11
                                 }
                             }
@@ -221,7 +230,7 @@ PanelWindow {
                             Label {
                                 text: signal + "%"
 
-                                color: "#39ff14"
+                                color: panel.accentBright
                                 font.bold: true
                             }
                         }
